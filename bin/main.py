@@ -1,10 +1,13 @@
 import pygame
 
+WIDTH = 800
+HEIGHT = 600
+
 class windowSetup:
     def __init__(self):
         pygame.init()
-        self.width = 600
-        self.height = 400
+        self.width = WIDTH
+        self.height = HEIGHT
         self.caption = "2D Maze Game"
 
     def create(self): # game screen creation for rest of the game
@@ -17,7 +20,17 @@ class eventHandler:
         self.display = gameScreen
         self.gameState = game
 
+    def gameEdge(self):
+        gameScreen = self.display
+        pygame.draw.rect(gameScreen, (211,211,211), (0, 0, WIDTH, 10))
+        pygame.draw.rect(gameScreen, (211,211,211), (0, 0, 10, HEIGHT))
+        pygame.draw.rect(gameScreen, (211,211,211), (WIDTH-10, 0, WIDTH, HEIGHT))
+        pygame.draw.rect(gameScreen, (211,211,211), (0, HEIGHT-10, WIDTH, HEIGHT))
+        pygame.display.update()
+        self.display = gameScreen
+
     def events(self):
+        self.gameEdge()
         clock = pygame.time.Clock()           # clock is declared for fps limit
         while self.gameState:
             clock.tick(self.FPS)
@@ -35,6 +48,7 @@ def main():
         eventUpdates.events()
         game = eventUpdates.gameState
     pygame.quit()
+    pass
 
 if __name__ == '__main__':
     main()

@@ -22,7 +22,7 @@ class eventHandler:
         while self.gameState:
             clock.tick(self.FPS)
             for event in pygame.event.get():  # fetches all events from pygame
-                if event.type == pygame.QUIT: # if the x is press, close
+                if event.type == pygame.QUIT: # if the x is pressed, close
                     self.gameState = False    # break the event loop
                 print(event)                  # show events for debug
 

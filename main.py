@@ -15,23 +15,44 @@ class windowSetup:
 
 class playerHandler:
     def __init__(self, gameScreen):
-        self.initX = 10
-        self.initY = 10
+        self.initX = WIDTH - (WIDTH + 5)
+        self.initY = HEIGHT - 5 - 37
         self.display = gameScreen
+        self.isJump = False
+        self.jumpCount = 10
         self.idleAnimation = pygame.image.load("bin/sprites/adventurer-idle-00.png") # loads player sprite from bin
+        self.animation = self.idleAnimation
 
-    def playerDraw(self):
-        self.display.blit(self.idleAnimation, (self.initX, self.initY))
+    def playerDraw(self, animation):
+        self.display.blit(animation, (self.initX, self.initY))
+
+    def playerJump(self):                                   # very basic jumping mechanic
+        if self.isJump:                                     # if true, able to 
+            if self.jumpCount >= -10:                       # maintains parabolic motion from -10 to 10 (x variable)
+                neg = 1
+                if self.jumpCount < 0:
+                    neg = -1
+                self.initY -= self.jumpCount**2 * 0.1 * neg # quadratic for parabolic motion
+                self.jumpCount -= 1
+            else:
+                self.isJump = False                         # stop the jump
+                self.jumpCount = 10                         # reset jumpCount
 
     def playerMovement(self, pressedKeys):
-        if pressedKeys[pygame.K_RIGHT] and self.initX < WIDTH - 5 - 50: # moves player right if in boundary
+        if pressedKeys[pygame.K_RIGHT] and self.initX < WIDTH - 5 - 50:      # moves player right if in boundary
             self.initX += 4
-        if pressedKeys[pygame.K_LEFT] and self.initX > 5:               # moves player left if in boundary
+            self.animation = self.idleAnimation                              # sets animation for moving right
+        if pressedKeys[pygame.K_LEFT] and self.initX > 5:                    # moves player left if in boundary
             self.initX -= 4
-        if pressedKeys[pygame.K_UP] and self.initY > 5:                 # moves player up if in boundary
+            self.animation = pygame.transform.flip(self.idleAnimation, 1, 0) # transforms right animation for moving left
+        if pressedKeys[pygame.K_UP] and self.initY > 5:                      # moves player up if in boundary
             self.initY -= 4
-        if pressedKeys[pygame.K_DOWN] and self.initY < HEIGHT - 5 - 37: # moves player down if in boundary
+        if pressedKeys[pygame.K_DOWN] and self.initY < HEIGHT - 5 - 37:      # moves player down if in boundary
             self.initY += 4
+        if pressedKeys[pygame.K_SPACE]:
+            self.isJump = True
+            self.playerJump()
+        self.playerDraw(self.animation)                                      # blit player to screen
         
 class eventHandler:
     def __init__(self, gameScreen, game):
@@ -55,17 +76,16 @@ class eventHandler:
     def events(self):
         clock = pygame.time.Clock()           # clock is declared for fps limit
         while self.gameState:
-            self.display.fill((0, 0, 0))      # refreshes background
-            self.player.playerDraw()          # player blit update
-            self.gameEdge()                   # keeps screen edge updated
-            self.draw()                       # update screen for all blits
             clock.tick(self.FPS)              # fps limit set
             for event in pygame.event.get():  # fetches all events from pygame
                 if event.type == pygame.QUIT: # if the x is pressed, close
                     self.gameState = False    # break the event loop
-                print(event)                  # show events for debug
             keys = pygame.key.get_pressed()
+            self.display.fill((0, 0, 0))      # refreshes background
+            self.gameEdge()                   # keeps screen edge updated
             self.player.playerMovement(keys)
+            self.draw()                       # update screen for all blits
+
 
 def main():
     game = True

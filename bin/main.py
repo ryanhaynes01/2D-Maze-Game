@@ -1,7 +1,6 @@
 import pygame
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH, HEIGHT = 800, 600
 
 class windowSetup:
     def __init__(self):
@@ -14,6 +13,11 @@ class windowSetup:
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption(self.caption)
 
+class playerHandler:
+    def __init__(self):
+        self.initX = 0
+        self.initY = 0
+
 class eventHandler:
     def __init__(self, gameScreen, game):
         self.FPS = 60
@@ -22,11 +26,12 @@ class eventHandler:
 
     def gameEdge(self):
         gameScreen = self.display
-        pygame.draw.rect(gameScreen, (211,211,211), (0, 0, WIDTH, 10))              # top rectangle
-        pygame.draw.rect(gameScreen, (211,211,211), (0, 0, 10, HEIGHT))             # left rectangle
-        pygame.draw.rect(gameScreen, (211,211,211), (WIDTH-10, 0, WIDTH, HEIGHT))   # right rectangle
-        pygame.draw.rect(gameScreen, (211,211,211), (0, HEIGHT-10, WIDTH, HEIGHT))  # bottom rectangle
-        pygame.display.update()                                                     # draws rectangles to screen
+        edgeSize = 5
+        pygame.draw.rect(gameScreen, (211,211,211), (0, 0, WIDTH, edgeSize))             # top rectangle
+        pygame.draw.rect(gameScreen, (211,211,211), (0, 0, edgeSize, HEIGHT))            # left rectangle
+        pygame.draw.rect(gameScreen, (211,211,211), (WIDTH-edgeSize, 0, WIDTH, HEIGHT))  # right rectangle
+        pygame.draw.rect(gameScreen, (211,211,211), (0, HEIGHT-edgeSize, WIDTH, HEIGHT)) # bottom rectangle
+        pygame.display.update()                                                          # draws rectangles to screen
         self.display = gameScreen
 
     def events(self):
